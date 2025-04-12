@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fetal Plane Classifier</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Fetal Plane Classifier</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="images" accept=".png,.jpg,.jpeg" multiple required>
+            <input type="submit" value="Classify">
+        </form>
+        {% if predictions %}
+        <h2>Predictions</h2>
+        <div class="grid">
+            {% for fname, label in predictions %}
+            <div class="card">
+                <img src="{{ url_for('uploaded_file', filename=fname) }}" alt="{{ fname }}">
+                <p><strong>{{ fname }}</strong><br>{{ label }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
