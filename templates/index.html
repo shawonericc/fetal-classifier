@@ -1,27 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Fetal Plane Classifier</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fetal Ultrasound Analysis | genZ 2.0 Bangladesh</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <header class="header">
     <div class="container">
-        <h1>Fetal Plane Classifier</h1>
-        <form method="POST" enctype="multipart/form-data">
-            <input type="file" name="images" accept=".png,.jpg,.jpeg" multiple required>
-            <input type="submit" value="Classify">
-        </form>
-        {% if predictions %}
-        <h2>Predictions</h2>
-        <div class="grid">
-            {% for fname, label in predictions %}
-            <div class="card">
-                <img src="{{ url_for('uploaded_file', filename=fname) }}" alt="{{ fname }}">
-                <p><strong>{{ fname }}</strong><br>{{ label }}</p>
-            </div>
-            {% endfor %}
+      <div class="navbar">
+        <div class="brand">
+          <img src="/static/logo.png" alt="genZ scan" class="logo" />
+          <span class="brand-text">genZ 2.0 Bangladesh</span>
         </div>
-        {% endif %}
+      </div>
     </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <!-- Hero -->
+      <div class="hero">
+        <h1 class="hero-title">Deep Womb AI-Fetal Ultrasound Plane Classification</h1>
+        <p class="hero-subtitle">AI-powered analysis of obstetric ultrasound images</p>
+      </div>
+
+      <!-- Upload Form -->
+      <div class="upload-card">
+        <form method="POST" enctype="multipart/form-data" class="upload-form">
+          <div class="file-input-wrapper">
+            <input type="file" name="images" id="fileInput" accept=".png,.jpg,.jpeg" multiple required class="file-input" aria-label="Upload ultrasound images" />
+            <label for="fileInput" class="file-input-label">
+              <svg class="upload-icon" viewBox="0 0 24 24">
+                <path d="M19 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5M12 4v12m0 0-4-4m4 4 4-4"/>
+              </svg>
+              <span class="file-input-text">Select Ultrasound Images</span>
+              <span class="file-input-hint">PNG, JPG up to 5MB</span>
+            </label>
+          </div>
+          <button type="submit" class="submit-button">
+            <span class="button-text">Analyze Images</span>
+            <div class="loading-spinner hidden"></div>
+          </button>
+        </form>
+      </div>
+
+      <!-- Analysis Results -->
+      {% if predictions %}
+      <section class="results-section">
+        <h2 class="results-title">Analysis Results</h2>
+        <div class="results-grid">
+          {% for fname, label in predictions %}
+          <div class="result-card">
+            <div class="card-image-container">
+              <img src="{{ url_for('uploaded_file', filename=fname) }}" alt="Ultrasound scan" class="card-image" loading="lazy" />
+              <div class="card-badge">{{ label }}</div>
+            </div>
+            <div class="card-footer">
+              <span class="file-name">{{ fname }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      <!-- Show Anomaly Button (AFTER Analysis Section) -->
+      <div class="anomaly-result-button" style="margin-top: 2rem;">
+        <button id="showAnomalyResult" class="submit-button">
+          Show Anomaly Result
+        </button>
+      </div>
+
+      <!-- Anomaly Result Image -->
+      <div id="anomalyResultSection" style="display:none; margin-top: 1.5rem;">
+        <img src="/static/abn/abn.jpg" alt="Anomaly Result" id="anomalyResultImage" style="width:300%; max-width:900px; display:block; margin:auto;" />
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">© 2025 GenZ 2.0 Bangladesh. For research use only.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector('.file-input').addEventListener('change', function(e) {
+      const files = e.target.files;
+      const label = document.querySelector('.file-input-text');
+      if (files.length > 0) {
+        label.textContent = `${files.length} file${files.length > 1 ? 's' : ''} selected`;
+      }
+    });
+
+    document.querySelector('form').addEventListener('submit', function() {
+      const spinner = document.querySelector('.loading-spinner');
+      const buttonText = document.querySelector('.button-text');
+      spinner.classList.remove('hidden');
+      buttonText.textContent = 'Analyzing...';
+    });
+
+    document.getElementById('showAnomalyResult').addEventListener('click', function() {
+      const section = document.getElementById('anomalyResultSection');
+      section.style.display = 'block';
+    });
+  </script>
 </body>
 </html>
+

@@ -1,25 +1,12 @@
+# app.py
 from flask import Flask, request, render_template, send_from_directory
 import numpy as np
 import os
-import requests
 from tensorflow.keras.models import load_model
 import cv2
 
 app = Flask(__name__)
-MODEL_PATH = 'best_model_densenet169.h5'
-MODEL_DRIVE_ID = '101GDngJmVrhIj81K_9lwpv9fMLB0hK_n'
-DRIVE_URL = f'https://drive.google.com/uc?export=download&id={MODEL_DRIVE_ID}'
-
-# Download model if not present
-if not os.path.exists(MODEL_PATH):
-    print("📥 Downloading model from Google Drive...")
-    with requests.get(DRIVE_URL, stream=True) as r:
-        with open(MODEL_PATH, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
-    print("✅ Model downloaded.")
-
-model = load_model(MODEL_PATH)
+model = load_model('best_model_densenet169.h5')
 class_labels = np.load('class_labels.npy', allow_pickle=True)
 
 UPLOAD_FOLDER = 'uploads'
@@ -56,3 +43,5 @@ def uploaded_file(filename):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
